@@ -26,8 +26,8 @@ module.exports = {
       specification: {
         type: Sequelize.STRING
       },
-      quantity: {
-        type: Sequelize.STRING
+      stock: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
