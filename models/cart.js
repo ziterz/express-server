@@ -14,7 +14,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Cart.init({
-    status: DataTypes.STRING
+    status: {
+      type:DataTypes.BOOLEAN,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'Status is required'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'Status is required'
+        },
+      }
+    },
   }, {
     sequelize,
     modelName: 'Cart',

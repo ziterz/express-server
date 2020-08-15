@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       deleteHash: {
         type: Sequelize.STRING

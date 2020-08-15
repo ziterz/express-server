@@ -14,7 +14,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Status.init({
-    name: DataTypes.STRING
+    name: {
+      type:DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: 'Name is required'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'Name is required'
+        },
+      }
+    },
   }, {
     sequelize,
     modelName: 'Status',

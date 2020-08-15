@@ -33,9 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     noKTP: DataTypes.STRING,
-    imageKTP: DataTypes.STRING,
+    imageKTP: DataTypes.TEXT,
     noNPWP: DataTypes.STRING,
-    imageNPWP: DataTypes.STRING,
+    imageNPWP: DataTypes.TEXT,
     address: DataTypes.STRING,
     village: DataTypes.STRING,
     district: DataTypes.STRING,

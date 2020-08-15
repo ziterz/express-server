@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addConstraint('CartItems', {
+    return queryInterface.addConstraint('CartDetails', {
       fields: ['idProduct'],
       type: 'foreign key',
       name: 'foreign_key_idProduct',
@@ -16,6 +16,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeConstraint('CartItems', 'foreign_key_idProduct')
+    return queryInterface.removeConstraint('CartDetails', 'foreign_key_idProduct')
   }
 };

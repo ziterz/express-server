@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      idSubCategory: {
-        type: Sequelize.INTEGER
-      },
       title: {
         type: Sequelize.STRING
       },

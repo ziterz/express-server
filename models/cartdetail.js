@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Transaction extends Model {
+  class CartDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  Transaction.init({
-    idCart: {
+  CartDetail.init({
+    chartId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
@@ -32,68 +32,72 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    idStatus: {
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: {
           args: true,
-          msg: 'ID Status is required'
+          msg: 'ID Product is required'
         },
         notEmpty: {
           args: true,
-          msg: 'ID Status is required'
+          msg: 'ID Product is required'
         },
         isInt: {
           args: true,
-          msg: 'ID Status has to be an integer'
+          msg: 'ID Product has to be an integer'
         }
       }
     },
-    idUser: {
+    quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: {
           args: true,
-          msg: 'ID User is required'
+          msg: 'Quantity is required'
         },
         notEmpty: {
           args: true,
-          msg: 'ID User is required'
+          msg: 'Quantity is required'
         },
-        isInt: {
+        isNumeric: {
           args: true,
-          msg: 'ID User has to be an integer'
+          msg: 'Quantity only contains number'
+        },
+        isGreaterThanZero(value) {
+          if (value < 0) {
+            throw new Error('Quantity minimal zero')
+          }
         }
       }
     },
-    rentDate: {
-      type:DataTypes.DATE,
+    price: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: {
           args: true,
-          msg: 'Rent date is required'
+          msg: 'Price is required'
         },
         notEmpty: {
           args: true,
-          msg: 'Rent date is required'
+          msg: 'Price is required'
         },
-      }
-    },
-    returnDate: {
-      type:DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notNull: {
+        isNumeric: {
           args: true,
-          msg: 'Return date is required'
+          msg: 'Price only contains number'
         },
-        notEmpty: {
-          args: true,
-          msg: 'Return date is required'
-        },
+        isGreaterThanZero(value) {
+          if (!value) {
+            throw new Error('Price has to be greater than zero')
+          } else {
+            if (value < 0) {
+              throw new Error('Price has to be greater than zero')
+            }
+          }
+        }
       }
     },
     total: {
@@ -110,17 +114,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         isNumeric: {
           args: true,
-          msg: 'Only accept number'
-        },
-        isInt: {
-          args: true,
-          msg: 'Only accept integer number'
+          msg: 'Total only contains number'
         }
       }
     },
   }, {
     sequelize,
-    modelName: 'Transaction',
+    modelName: 'CartDetail',
   });
-  return Transaction;
+  return CartDetail;
 };

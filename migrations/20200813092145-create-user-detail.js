@@ -15,13 +15,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       imageKTP: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       noNPWP: {
         type: Sequelize.STRING
       },
       imageNPWP: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       address: {
         type: Sequelize.STRING
