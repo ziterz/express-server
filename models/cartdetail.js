@@ -1,18 +1,12 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  const Model = sequelize.Sequelize.Model
   class CartDetail extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+    static associate (models) {
+      CartDetail.belongsTo(models.Cart, { foreignKey: 'idCart' })
+      CartDetail.belongsTo(models.Product, { foreignKey: 'idProduct' })
     }
-  };
+  }
   CartDetail.init({
     chartId: {
       type: DataTypes.INTEGER,
@@ -100,26 +94,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    total: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notNull: {
-          args: true,
-          msg: 'Total is required'
-        },
-        notEmpty: {
-          args: true,
-          msg: 'Total is required'
-        },
-        isNumeric: {
-          args: true,
-          msg: 'Total only contains number'
-        }
-      }
-    },
+    total: DataTypes.INTEGER
   }, {
     sequelize,
+    hooks: {
+      beforeCreate(cartDetail, options) {
+        cartDetail.total = cartDetail.price * cartDetail.quantity
+      },
+      beforeUpdate (cartDetail, options) {
+        cartDetail.total = cartDetail.price * cartDetail.quantity
+      }
+    },
     modelName: 'CartDetail',
   });
   return CartDetail;

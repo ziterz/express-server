@@ -1,18 +1,13 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  const Model = sequelize.Sequelize.Model
   class Transaction extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+    static assosiate (models) {
+      Transaction.belongsTo(models.Cart, { foreignKey: 'idCart'} )
+      Transaction.belongsTo(models.User, { foreignKey: 'idUser'} )
+      Transaction.belongsTo(models.Status, { foreignKey: 'idStatus'} )
     }
-  };
+  }
   Transaction.init({
     idCart: {
       type: DataTypes.INTEGER,
