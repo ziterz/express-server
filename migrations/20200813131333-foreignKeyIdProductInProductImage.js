@@ -2,12 +2,12 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addConstraint('Products', {
-      fields: ['idProductImage'],
+    return queryInterface.addConstraint('ProductImages', {
+      fields: ['idProduct'],
       type: 'foreign key',
-      name: 'foreign_key_idProductImage',
+      name: 'foreign_key_idProduct',
       references: { //Required field
-        table: 'ProductImages',
+        table: 'Products',
         field: 'id'
       },
       onDelete: 'cascade',
@@ -16,6 +16,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeConstraint('Products', 'foreign_key_idProductImage')
+    return queryInterface.removeConstraint('ProductImages', 'foreign_key_idProduct')
   }
 };

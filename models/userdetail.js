@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class ProductImage extends Model {
+  class UserDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,57 +13,51 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  ProductImage.init({
-    idProduct: {
+  UserDetail.init({
+    idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: {
           args: true,
-          msg: 'ID Product is required'
+          msg: 'ID User is required'
         },
         notEmpty: {
           args: true,
-          msg: 'ID Product is required'
+          msg: 'ID User is required'
         },
         isInt: {
           args: true,
-          msg: 'ID Product has to be an integer'
+          msg: 'ID User has to be an integer'
         }
       }
     },
-    title: {
-      type:DataTypes.STRING,
+    noKTP: DataTypes.STRING,
+    imageKTP: DataTypes.STRING,
+    noNPWP: DataTypes.STRING,
+    imageNPWP: DataTypes.STRING,
+    address: DataTypes.STRING,
+    village: DataTypes.STRING,
+    district: DataTypes.STRING,
+    city: DataTypes.STRING,
+    postalCode: DataTypes.STRING,
+    verify: {
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
           args: true,
-          msg: 'Title is required'
+          msg: 'Verify status is required'
         },
         notEmpty: {
           args: true,
-          msg: 'Title is required'
-        },
+          msg: 'Verify status is required'
+        }
       }
-    },
-    url: {
-      type:DataTypes.TEXT,
-      allowNull: false,
-      validate: {
-        notNull: {
-          args: true,
-          msg: 'Link url is required'
-        },
-        notEmpty: {
-          args: true,
-          msg: 'Link url is required'
-        },
-      }
-    },
-    deleteHash: DataTypes.STRING
+    }
   }, {
     sequelize,
-    modelName: 'ProductImage',
+    modelName: 'UserDetail',
   });
-  return ProductImage;
+  return UserDetail;
 };
