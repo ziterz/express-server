@@ -14,23 +14,21 @@ class CategoryController {
     Category.findOne({
       where: {
         id
-      }
+      },
+      include: SubCategory
     })
       .then(data => {
         if (data) {
-          res.status(200).json({
-            id: data.id,
-            title: data.title,
-          })
+          res.status(200).json(data);
         } else {
           next({
             status: 404,
             name: 'NotFound',
             message: 'Category is not found with id ' + id
-          })
+          });
         }
       })
-      .catch(err => next(err))
+      .catch(err => next(err));
   }
 
   static delete(req, res, next) {
