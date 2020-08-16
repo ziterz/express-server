@@ -4,6 +4,9 @@ const categoryRoutes = require('./category');
 const subCategoryRoutes = require('./subCategory');
 const productRoutes = require('./product');
 
+router.use('/', (req,res) => {
+  res.send('Welcome to Rentformasi API');
+})
 router.use('/users', userRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/sub-categories', subCategoryRoutes);
