@@ -1,5 +1,4 @@
-const { User, Role, Cart } = require('../models');
-const { Op } = require('sequelize');
+const { User, Role } = require('../models');
 const { BcryptHelper, JWTHelper } = require('../helpers');
 
 class UserController {
@@ -12,16 +11,6 @@ class UserController {
     User.findOne({
       include: {
         model: Role
-      },
-      where: {
-        [Op.and]: [
-          {
-            email: input.email
-          },
-          {
-            idRole: 3
-          }
-        ]
       }
     })
       .then((user) => {
@@ -37,7 +26,7 @@ class UserController {
             const access_token = JWTHelper.signToken(payload);
             res.status(200).json({
               access_token,
-              message: 'Login success',
+              message: 'Login success'
             });
           } else {
             next({

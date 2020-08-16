@@ -1,15 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SubCategory extends Model {
-    static assosiate(models) {
-      SubCategory.belongsTo(models.Category, { foreignKey: 'idCategory' });
-      SubCategory.hasMany(models.Product, { foreignKey: 'idSubCategory' });
-    }
-  }
-  SubCategory.init({
+  const SubCategory = sequelize.define('SubCategory', {
     idCategory: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -55,10 +46,15 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Image is required'
         },
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'SubCategory',
   });
+  
+  SubCategory.associate = function(models) {
+    SubCategory.belongsTo(models.Category, { foreignKey: 'idCategory' });
+    SubCategory.hasMany(models.Product, { foreignKey: 'idSubCategory' });
+  };
   return SubCategory;
 };

@@ -1,17 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Product extends Model {
-    static assosiate(models) {
-      Product.belongsTo(models.User, { foreignKey: 'idUser' });
-      Product.belongsTo(models.SubCategory, { foreignKey: 'idSubCategory' });
-      Product.hasMany(models.ProductImage, { foreignKey: 'idProduct' });
-      Product.hasMany(models.CartDetail, { foreignKey: 'idProduct' });
-    }
-  }
-  Product.init({
+  const Product = sequelize.define('Product', {
     idSubCategory: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -126,10 +115,17 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'Product',
   });
+  
+  Product.associate = function(models) {
+    Product.belongsTo(models.User, { foreignKey: 'idUser' });
+    Product.belongsTo(models.SubCategory, { foreignKey: 'idSubCategory' });
+    Product.hasMany(models.ProductImage, { foreignKey: 'idProduct' });
+    Product.hasMany(models.CartDetail, { foreignKey: 'idProduct' });
+  };
   return Product;
 };

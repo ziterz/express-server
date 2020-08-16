@@ -1,15 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Cart extends Model {
-    static associate(models) {
-      Cart.hasMany(models.CartDetail, { foreignKey: 'idCart' });
-      Cart.hasMany(models.Transaction, { foreignKey: 'idCart' });
-    }
-  }
-  Cart.init({
+  const Cart = sequelize.define('Cart', {
     status: {
       type:DataTypes.BOOLEAN,
       allowNull: false,
@@ -23,10 +14,15 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Status is required'
         },
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'Cart',
   });
+
+  Cart.associate = function(models) {
+    Cart.hasMany(models.CartDetail, { foreignKey: 'idCart' });
+    Cart.hasMany(models.Transaction, { foreignKey: 'idCart' });
+  };
   return Cart;
 };

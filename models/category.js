@@ -1,14 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Category extends Model {
-    static assosiate(models) {
-      Category.hasMany(models.SubCategory, { foreignKey: 'idCategory' });
-    }
-  }
-  Category.init({
+  const Category = sequelize.define('Category', {
     title: {
       type:DataTypes.STRING,
       allowNull: false,
@@ -22,10 +14,14 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Title is required'
         },
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'Category',
   });
+
+  Category.associate = function(models) {
+    Category.hasMany(models.SubCategory, { foreignKey: 'idCategory' });
+  };
   return Category;
 };

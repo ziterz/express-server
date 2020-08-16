@@ -1,16 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Transaction extends Model {
-    static assosiate(models) {
-      Transaction.belongsTo(models.Cart, { foreignKey: 'idCart'});
-      Transaction.belongsTo(models.User, { foreignKey: 'idUser'});
-      Transaction.belongsTo(models.Status, { foreignKey: 'idStatus'});
-    }
-  }
-  Transaction.init({
+  const Transaction = sequelize.define('Transaction', {
     idCart: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -114,10 +104,16 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Only accept integer number'
         }
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'Transaction',
   });
+
+  Transaction.associate = function(models) {
+    Transaction.belongsTo(models.Cart, { foreignKey: 'idCart'});
+    Transaction.belongsTo(models.User, { foreignKey: 'idUser'});
+    Transaction.belongsTo(models.Status, { foreignKey: 'idStatus'});
+  };
   return Transaction;
 };
