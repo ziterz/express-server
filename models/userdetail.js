@@ -1,9 +1,12 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
+const { BcryptHelper } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.Sequelize.Model
   class UserDetail extends Model {
-    static assosiate (models) {
-      User.belongsTo(models.User, { foreignKey: 'idUser' })
+    static assosiate(models) {
+      User.belongsTo(models.User, { foreignKey: 'idUser' });
     }
   }
   UserDetail.init({

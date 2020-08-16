@@ -1,14 +1,22 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
+const { BcryptHelper } = require('../helpers');
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.Sequelize.Model
   class User extends Model {
-    static assosiate (models) {
-      User.hasMany(models.Transaction, { foreignKey: 'idUser'} )
-      User.hasOne(models.UserDetail, { foreignKey: 'idUser'} )
-      User.hasMany(models.Product, { foreignKey: 'idUser'} )
-      User.belongsTo(models.Role, { foreignKey: 'idRole' })
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      User.hasMany(models.Transaction, { foreignKey: 'idUser'});
+      User.hasOne(models.UserDetail, { foreignKey: 'idUser'});
+      User.hasMany(models.Product, { foreignKey: 'idUser'});
+      User.belongsTo(models.Role, { foreignKey: 'idRole' });
     }
-  }
+  };
   User.init({
     idRole: {
       type: DataTypes.INTEGER,
@@ -119,6 +127,15 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
+    hooks: {
+      beforeCreate(user, options) {
+        const lastName = user.lastName
+        if (!lastName) {
+          user.lastName = user.firstName
+        }
+        user.password = BcryptHelper.hashingPassword(user.password)
+      },
+    },
     modelName: 'User',
   });
   return User;

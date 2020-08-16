@@ -1,10 +1,12 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.Sequelize.Model
   class Cart extends Model {
-    static associate (models) {
-      Cart.hasMany(models.CartDetail, { foreignKey: 'idCart' })
-      Cart.hasMany(models.Transaction, { foreignKey: 'idCart' })
+    static associate(models) {
+      Cart.hasMany(models.CartDetail, { foreignKey: 'idCart' });
+      Cart.hasMany(models.Transaction, { foreignKey: 'idCart' });
     }
   }
   Cart.init({

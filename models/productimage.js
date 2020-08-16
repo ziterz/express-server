@@ -1,9 +1,11 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.Sequelize.Model
   class ProductImage extends Model {
-    static assosiate (models) {
-      ProductImage.belongsTo(models.Product, { foreignKey: 'idProduct' })
+    static assosiate(models) {
+      ProductImage.belongsTo(models.Product, { foreignKey: 'idProduct' });
     }
   }
   ProductImage.init({

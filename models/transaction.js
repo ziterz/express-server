@@ -1,11 +1,13 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const Model = sequelize.Sequelize.Model
   class Transaction extends Model {
-    static assosiate (models) {
-      Transaction.belongsTo(models.Cart, { foreignKey: 'idCart'} )
-      Transaction.belongsTo(models.User, { foreignKey: 'idUser'} )
-      Transaction.belongsTo(models.Status, { foreignKey: 'idStatus'} )
+    static assosiate(models) {
+      Transaction.belongsTo(models.Cart, { foreignKey: 'idCart'});
+      Transaction.belongsTo(models.User, { foreignKey: 'idUser'});
+      Transaction.belongsTo(models.Status, { foreignKey: 'idStatus'});
     }
   }
   Transaction.init({
