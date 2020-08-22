@@ -1,5 +1,7 @@
 const { Product, Category, SubCategory } = require('../models');
 const { Op } = require('sequelize');
+const JSONAPISerializer = require('jsonapi-serializer').Serializer;
+const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 
 class ProductController {
 
@@ -35,7 +37,8 @@ class ProductController {
     
   }
 
-  static findCategory(req, res, next) {
+  // Categories
+  static findCategories(req, res, next) {
     const id = +req.params.id
     Category.findOne({
       where: {
@@ -57,32 +60,52 @@ class ProductController {
       .catch(err => next(err));
   }
 
-  // Categories
   static getCategories(req, res, next) {
-    const keyword = req.query.keyword;
+    let { filter} = req.query;
+    let paramQuerySQL = {};
 
-    if (keyword) {
-      Category.findAll({
-        include: SubCategory,
-        where: {
-          title: {
-            [Op.iLike]: `%${keyword}%`
+    // Filter
+    if (filter != '' && typeof filter !== 'undefined') {
+      paramQuerySQL.where = {
+        [Op.or]: [
+          {
+            title: {
+              [Op.iLike]: '%' + filter.title + '%'
+            }
           }
-        }
-      })
-        .then(data => {
-          res.status(200).json(data);
-        })
-        .catch(err => next(err));
-    } else {
-      Category.findAll({
-        include: SubCategory
-      })
-        .then(data => {
-          res.status(200).json(data);
-        })
-        .catch(err => next(err));
+        ]
+      }
     }
+
+    
+    Category.findAll(paramQuerySQL)
+      .then(data => {
+        // var json = new JSONAPISerializer('categories', {
+        //   pluralizeType: true,
+        //   keyForAttribute: 'camelCase',
+        //   topLevelLinks: {
+        //     self: 'http://localhost:3000/products/categories'
+        //   },
+        //   attributes: ['title', 'SubCategories'],
+        //   SubCategories: {
+        //     ref: 'id',
+        //     attributes: ['title', 'image'],
+        //     includedLinks: {
+        //       self: function (record, current) {
+        //         return 'http://localhost:3000/subcategories/' + current.id;
+        //       }
+        //     },
+        //     relationshipLinks: {
+        //       related: function (record, current, parent) {
+        //         return 'http://localhost:3000/products/categories/' + parent.id +
+        //           '/subcategories/';
+        //       }
+        //     }
+        //   }
+        // }).serialize(data);
+        res.status(200).json(data);
+      })
+      .catch(err => next(err));
   }
 }
 

@@ -5,7 +5,7 @@ const productRoutes = require('./product');
 router.get('/', (req,res) => {
   res.send('Welcome to Rentformasi API');
 })
-router.use('/user', userRoutes);
-router.use('/product', productRoutes);
+router.use('/users', userRoutes);
+router.use('/products', productRoutes);
 
 module.exports = router;
