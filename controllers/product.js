@@ -76,34 +76,36 @@ class ProductController {
         ]
       }
     }
-
     
-    Category.findAll(paramQuerySQL)
+    Category.findAll({
+      where: paramQuerySQL.where,
+      include: SubCategory
+    })
       .then(data => {
-        // var json = new JSONAPISerializer('categories', {
-        //   pluralizeType: true,
-        //   keyForAttribute: 'camelCase',
-        //   topLevelLinks: {
-        //     self: 'http://localhost:3000/products/categories'
-        //   },
-        //   attributes: ['title', 'SubCategories'],
-        //   SubCategories: {
-        //     ref: 'id',
-        //     attributes: ['title', 'image'],
-        //     includedLinks: {
-        //       self: function (record, current) {
-        //         return 'http://localhost:3000/subcategories/' + current.id;
-        //       }
-        //     },
-        //     relationshipLinks: {
-        //       related: function (record, current, parent) {
-        //         return 'http://localhost:3000/products/categories/' + parent.id +
-        //           '/subcategories/';
-        //       }
-        //     }
-        //   }
-        // }).serialize(data);
-        res.status(200).json(data);
+        var jsonapi = new JSONAPISerializer('categories', {
+          pluralizeType: true,
+          keyForAttribute: 'camelCase',
+          topLevelLinks: {
+            self: 'http://localhost:3000/products/categories'
+          },
+          attributes: ['title', 'SubCategories'],
+          SubCategories: {
+            ref: 'id',
+            attributes: ['title', 'image'],
+            includedLinks: {
+              self: function (record, current) {
+                return 'http://localhost:3000/subcategories/' + current.id;
+              }
+            },
+            relationshipLinks: {
+              related: function (record, current, parent) {
+                return 'http://localhost:3000/products/categories/' + parent.id +
+                  '/subcategories/';
+              }
+            }
+          }
+        }).serialize(data);
+        res.status(200).json(jsonapi);
       })
       .catch(err => next(err));
   }
