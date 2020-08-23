@@ -2,6 +2,7 @@ const { Product, Category, SubCategory } = require('../models');
 const { Op } = require('sequelize');
 const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
+const pluralize = require('pluralize');
 
 class ProductController {
 
@@ -61,39 +62,52 @@ class ProductController {
   }
 
   static getCategories(req, res, next) {
-    let { filter} = req.query;
+    let { filter, sort, include } = req.query;
     let paramQuerySQL = {};
-    let sort;
 
     // jsonapi filtering - [title]
     if (filter != '' && typeof filter !== 'undefined') {
-      let qry = filter.title.split(',').map(function(item) {
+      let query = filter.title.split(',').map(function(item) {
         return {
           [Op.iLike]: '%' + item + '%'
         }
       });
 
       paramQuerySQL.where = {
-        title: { [Op.or]: qry }
+        title: { [Op.or]: query }
       }
     }
 
-    // // jsonapi sorting
-    // if (typeof sort === 'undefined' || sort == '') {
-    //   sort = 'ASC';
-    // }
+    // jsonapi sorting
+    if (sort != '' && typeof sort !== 'undefined') {
+      let query = sort.split(',');
+      query = query.map(function(item) {
+        if (item.charAt(0) !== '-') {
+          return [
+            [item, 'ASC']
+          ]
+        } else {
+          return [
+            [item.replace('-', ''), 'DESC']
+          ]
+        }
+      });
 
-    // // jsonapi sorting
-    // if (sort != '' && typeof sort !== 'undefined' && ['title'].includes(sort.toLowerCase())) {
-    //     paramQuerySQL.order = [
-    //         [order, sort]
-    //     ];
-    // }
+      paramQuerySQL.order = query;
+    }
+
+    // jsonapi including - [subcategories]
+    if (include != '' && typeof include !== 'undefined') {
+      let query = include.split(',');
+      query.forEach(item => {
+        if (pluralize.singular(item) === 'subcategory' || pluralize.plural(item) === 'subcategories') {
+          paramQuerySQL.include = SubCategory;
+        }
+      });
+    }
     
-    Category.findAll({
-      where: paramQuerySQL.where,
-      include: SubCategory
-    })
+    // sequelize
+    Category.findAll(paramQuerySQL)
       .then(data => {
         var jsonapi = new JSONAPISerializer('categories', {
           pluralizeType: true,
