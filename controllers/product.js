@@ -101,7 +101,10 @@ class ProductController {
       let query = include.split(',');
       query.forEach(item => {
         if (pluralize.singular(item) === 'subcategory' || pluralize.plural(item) === 'subcategories') {
-          paramQuerySQL.include = SubCategory;
+          paramQuerySQL.include = {
+            model: SubCategory,
+            as: 'subCategories'
+          }
         }
       });
     }
@@ -115,8 +118,8 @@ class ProductController {
           topLevelLinks: {
             self: 'http://localhost:3000/products/categories'
           },
-          attributes: ['title', 'SubCategories'],
-          SubCategories: {
+          attributes: ['title', 'subCategories'],
+          subCategories: {
             ref: 'id',
             attributes: ['title', 'image'],
             includedLinks: {
