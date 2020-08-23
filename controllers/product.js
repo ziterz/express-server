@@ -62,8 +62,9 @@ class ProductController {
   }
 
   static getCategories(req, res, next) {
-    let { filter, sort, include } = req.query;
+    let { filter, sort, include, page } = req.query;
     let paramQuerySQL = {};
+    let limit = 2, offset = 0;
 
     // jsonapi filtering - [title]
     if (filter != '' && typeof filter !== 'undefined') {
@@ -108,33 +109,73 @@ class ProductController {
         }
       });
     }
+
+    // jsonapi pagination
+    if (page != '' && typeof page !== 'undefined') {
+      if (page.offset != '' && typeof page.offset !== 'undefined' && page.offset > 0) {
+        paramQuerySQL.offset = parseInt(page.offset);
+      }
+
+      if (page.limit != '' && typeof page.limit !== 'undefined' && page.limit > 0) {
+        paramQuerySQL.limit = parseInt(page.limit);
+      }
+    }
     
     // sequelize
-    Category.findAll(paramQuerySQL)
-      .then(data => {
+    Category.findAndCountAll(paramQuerySQL)
+      .then(response => {
         var jsonapi = new JSONAPISerializer('categories', {
           pluralizeType: true,
           keyForAttribute: 'camelCase',
-          topLevelLinks: {
-            self: 'http://localhost:3000/products/categories'
-          },
           attributes: ['title', 'subCategories'],
           subCategories: {
             ref: 'id',
             attributes: ['title', 'image'],
             includedLinks: {
               self: function (record, current) {
-                return 'http://localhost:3000/subcategories/' + current.id;
+                return `http://localhost:3000/subcategories/${current.id}`;
               }
             },
             relationshipLinks: {
               related: function (record, current, parent) {
-                return 'http://localhost:3000/products/categories/' + parent.id +
-                  '/subcategories/';
+                return `http://localhost:3000/products/categories/${parent.id}/subcategories/`;
               }
             }
+          },
+          topLevelLinks: {
+            self: function(data) {
+              return `http://localhost:3000/products/categories?page[offset]=${page.offset}&page[limit]=${page.limit}`;
+            },
+            first: function(data) {
+              return `http://localhost:3000/products/categories?page[offset]=${0}&page[limit]=${page.limit}`;
+            },
+            prev: function(data) {
+              if (parseInt(page.offset) <= 0) {
+                return null;
+              } else {
+                let prev = parseInt(page.offset) - parseInt(page.limit);
+                if (prev < response.count) {
+                  return null;
+                }
+                return `http://localhost:3000/products/categories?page[offset]=${prev}&page[limit]=${page.limit}`;
+              }
+            },
+            next: function(data) {
+              if (parseInt(page.offset) >= response.count) {
+                return null;
+              } else {
+                let next = parseInt(page.offset) + parseInt(page.limit);
+                if (next > response.count) {
+                  return null;
+                }
+                return `http://localhost:3000/products/categories?page[offset]=${next}&page[limit]=${page.limit}`;
+              }
+            },
+            last: function(data) {
+              return `http://localhost:3000/products/categories?page[offset]=${response.count}&page[limit]=${page.limit}`;
+            }
           }
-        }).serialize(data);
+        }).serialize(response.rows);
         res.status(200).json(jsonapi);
       })
       .catch(err => next(err));
