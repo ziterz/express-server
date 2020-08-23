@@ -37,7 +37,7 @@ class ProductController {
     
   }
 
-  // Categories
+  // categories
   static findCategories(req, res, next) {
     const id = +req.params.id
     Category.findOne({
@@ -63,19 +63,32 @@ class ProductController {
   static getCategories(req, res, next) {
     let { filter} = req.query;
     let paramQuerySQL = {};
+    let sort;
 
-    // Filter
+    // jsonapi filtering - [title]
     if (filter != '' && typeof filter !== 'undefined') {
+      let qry = filter.title.split(',').map(function(item) {
+        return {
+          [Op.iLike]: '%' + item + '%'
+        }
+      });
+
       paramQuerySQL.where = {
-        [Op.or]: [
-          {
-            title: {
-              [Op.iLike]: '%' + filter.title + '%'
-            }
-          }
-        ]
+        title: { [Op.or]: qry }
       }
     }
+
+    // // jsonapi sorting
+    // if (typeof sort === 'undefined' || sort == '') {
+    //   sort = 'ASC';
+    // }
+
+    // // jsonapi sorting
+    // if (sort != '' && typeof sort !== 'undefined' && ['title'].includes(sort.toLowerCase())) {
+    //     paramQuerySQL.order = [
+    //         [order, sort]
+    //     ];
+    // }
     
     Category.findAll({
       where: paramQuerySQL.where,
